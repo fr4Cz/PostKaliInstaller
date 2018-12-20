@@ -206,16 +206,11 @@ class PKInstall:
 
     @staticmethod
     def __wget_packages():
-        return [
-            'https://raw.githubusercontent.com/trustedsec/unicorn/master/LICENSE.txt'
-        ]
+        return []
 
 
 if __name__ == '__main__':
-    config = {
-        'DEBUG': True,
-        'skip': {'apt': True}
-    }
-
+    config = {}
+    
     pki = PKInstall(config)
     pki.install()
