@@ -62,7 +62,7 @@ class PKInstall:
         else:
             log_level = logging.INFO
 
-        logging.basicConfig(filename='{}/pk_install.log'.format(self.__ROOT_PATH__), level=log_level)
+        logging.basicConfig(format='%(levelname)s: %(asctime)s: %(message)s', filename='{}/pk_install.log'.format(self.__ROOT_PATH__), level=log_level)
         logging.info('Started running PK Installer at {}'.format(dt.datetime.now()))
         if 'skip' in args:
             if 'apt' in args['skip']:
@@ -132,6 +132,7 @@ class PKInstall:
             logging.debug("Attempting to install packages with wget")
             self.__wget_install()
 
+        logging.info('Installation finished at {}'.format(dt.datetime.now()))
         return
 
     def __build_dir_tree(self):
