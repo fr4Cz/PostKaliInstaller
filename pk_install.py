@@ -6,8 +6,8 @@
 #   after the initial installation of the regular 64 bit version of Kali Linux.
 #
 #   For configuring this script according to your own needs please review the packages in the
-#   _apt_packages(), _git_packages(), __wget_packages() methods and change them according to your preferred configuration.
-#   If you are new to Kali Linux then you should be ok running the vanilla configuration.
+#   _apt_packages(), _git_packages(), __wget_packages() methods and change them according to your preferred
+#   configuration. If you are new to Kali Linux then you should be ok running the vanilla configuration.
 #
 #
 #   Author: Zorko
@@ -24,24 +24,19 @@ from subprocess import STDOUT, check_call
 
 class PKInstall:
     __DEBUG__ = False
+    __SIMULATOR__ = False
+    __ROOT_PATH__ = os.getcwd()
+    __ACCESS_RIGHTS__ = 0o755
+    __GIT__ = '{}/git'.format(__ROOT_PATH__)
+    __TOOLS__ = '{}/tools'.format(__ROOT_PATH__)
     __SOURCES__ = {
         'apt': True,
         'git': True,
-        'wget': True
+        'wget': True,
+        'scripts': True
     }
 
-    __GIT__ = ''
-    __TOOLS__ = ''
-
     def __init__(self, args={}):
-        # Set default values
-        self.__ROOT_PATH__ = os.getcwd()
-        self.__ACCESS_RIGHTS__ = 0o755
-
-        self.__SOURCES__['apt'] = True
-        self.__SOURCES__['git'] = True
-        self.__SOURCES__['wget'] = True
-
         #
         # Set tools root directory
         if 'root' in args:
@@ -53,11 +48,17 @@ class PKInstall:
         if self.__ROOT_PATH__ != os.getcwd():
             os.chdir(self.__ROOT_PATH__)
 
+        if 'SIMULATOR' in args:
+            if args['SIMULATOR']:
+                self.__SIMULATOR__ = True
         #
         # Set log-level
         if 'DEBUG' in args:
-            self.__DEBUG__ = True
-            log_level = logging.DEBUG
+            if args['DEBUG']:
+                self.__DEBUG__ = True
+                log_level = logging.DEBUG
+            else:
+                log_level = logging.INFO
         else:
             log_level = logging.INFO
 
@@ -76,6 +77,10 @@ class PKInstall:
                 if args['skip']['wget']:
                     self.__SOURCES__['wget'] = False
 
+            if 'scripts' in args['skip']:
+                if args['skip']['scripts']:
+                    self.__SOURCES__['scripts'] = False
+
         #
         # Set directory rights
         if 'access_rights' in args:
@@ -89,19 +94,31 @@ class PKInstall:
                   "apt: {},\n\t\t" \
                   "git: {},\n\t\t" \
                   "wget: {},\n\t\t" \
+                  "scripts: {},\n\t\t" \
+                  "SIMULATOR MODE: {}\n\t\t" \
                   "LOG LEVEL: {}".format(self.__ROOT_PATH__,
                                          self.__ACCESS_RIGHTS__,
                                          self.__SOURCES__['apt'],
                                          self.__SOURCES__['git'],
                                          self.__SOURCES__['wget'],
+                                         self.__SOURCES__['scripts'],
+                                         self.__SIMULATOR__,
                                          log_level)
             logging.debug(msg)
 
     def install(self):
         # Prepare directory structure
         # Defaults to: ~/git/ and ~/tools/
+        if self.__SIMULATOR__:
+            logging.info("SIMULATOR: Running in simulator mode! "
+                         "This will only dump commands which would have been run on the system. "
+                         "It is recommended that this mode is run with the DEBUG config flag set for the best output")
         logging.debug('Attempting to build the directory structure')
         self.__build_dir_tree()
+
+        if self.__SOURCES__['scripts']:
+            logging.debug("Attempting to run initial scripts")
+            self.__scripts_install()
 
         if self.__SOURCES__['apt']:
             logging.debug("Attempting to install packages with apt")
@@ -125,14 +142,33 @@ class PKInstall:
                 logging.debug("Creating git directory: {}".format(self.__GIT__))
                 if not os.path.isdir(self.__GIT__):
                     if self.__SOURCES__['git']:
-                        os.mkdir(self.__GIT__, self.__ACCESS_RIGHTS__)
+                        if self.__SIMULATOR__:
+                            msg = "SIMULATOR: creating directory: {} " \
+                                  "with the following rights {}".format(self.__GIT__, self.__ACCESS_RIGHTS__)
+                            logging.info(msg)
+                        else:
+                            os.mkdir(self.__GIT__, self.__ACCESS_RIGHTS__)
                 else:
                     logging.warning('The directory: {} already exists, using existing directory'.format(self.__GIT__))
+
+                if os.path.isdir(self.__GIT__):
+                    for path in self.__git_packages():
+                        new_dir = '{}{}'.format(self.__GIT__, path)
+
+                        if not os.path.isdir(new_dir):
+                            os.mkdir(new_dir, self.__ACCESS_RIGHTS__)
+                        else:
+                            logging.warning('The directory {} already exists, using existing directory'.format(new_dir))
 
                 logging.debug("Creating tools directory: {}".format(self.__TOOLS__))
                 if not os.path.isdir(self.__TOOLS__):
                     if self.__SOURCES__['wget']:
-                        os.mkdir(self.__TOOLS__, self.__ACCESS_RIGHTS__)
+                        if self.__SIMULATOR__:
+                            msg = "SIMULATOR: creating directory: {} " \
+                                  "with the following rights {}".format(self.__TOOLS__, self.__ACCESS_RIGHTS__)
+                            logging.info(msg)
+                        else:
+                            os.mkdir(self.__TOOLS__, self.__ACCESS_RIGHTS__)
                 else:
                     logging.warning('The directory: {} already exists, using existing directory'.format(self.__TOOLS__))
             except OSError as e:
@@ -143,7 +179,7 @@ class PKInstall:
     def __apt_install(self):
         logging.debug('Entered self.__apt_install()')
         if os.geteuid() != 0:
-            logging.debug('Installing software with apt should only be done by root, skipping step...')
+            logging.warning('Installing software with apt should only be done by root, skipping step...')
             return
 
         try:
@@ -151,7 +187,10 @@ class PKInstall:
 
             for pkg in self.__apt_packages():
                 logging.debug('Installing {} with apt-get'.format(pkg))
-                check_call(['apt-get', 'install', '-y', pkg], stdout=open(os.devnull, 'wb'), stderr=STDOUT)
+                if self.__SIMULATOR__:
+                    logging.info('SIMULATOR: running command: apt-get install -y {}'.format(pkg))
+                else:
+                    check_call(['apt-get', 'install', '-y', pkg], stdout=open(os.devnull, 'wb'), stderr=STDOUT)
         except OSError as e:
             logging.fatal(e)
             sys.exit(e)
@@ -161,56 +200,132 @@ class PKInstall:
 
     def __git_install(self):
         logging.debug('Entered self.__git_install()')
-        os.chdir(self.__GIT__)
+        if not self.__SIMULATOR__:
+            logging.debug('Changing directory to: {}'.format(self.__GIT__))
+            os.chdir(self.__GIT__)
+            logging.debug('CWD: {}'.format(os.getcwd()))
 
         try:
-            for pkg in self.__git_packages():
-                logging.debug('Installing {} with git'.format(pkg))
-                check_call(['git', 'clone', pkg], stdout=open(os.devnull, 'wb'), stderr=STDOUT)
+            packages = self.__git_packages()
+            for key in packages:
+                if not self.__SIMULATOR__:
+                    os.chdir('{}/{}'.format(os.getcwd(), key))
+
+                for pkg in packages[key]:
+                    if key == 'tools':
+                        url = packages[key][pkg]['url']
+                        cfg = packages[key][pkg]['config']
+
+                        if not os.path.isdir('{}/{}'.format(os.getcwd(), pkg)) or self.__SIMULATOR__:
+                            logging.debug('Installing {} with git'.format(url))
+                            try:
+                                if self.__SIMULATOR__:
+                                    logging.info('SIMULATOR: running command: git clone {} {}'.format(url, pkg))
+                                else:
+                                    check_call(['git', 'clone', url, pkg], stdout=open(os.devnull, 'wb'), stderr=STDOUT)
+
+                                if cfg != '':
+                                    if self.__SIMULATOR__:
+                                        logging.info('SIMULATOR: running command: sh {}'.format(cfg))
+                                    else:
+                                        try:
+                                            logging.debug('Running {} config script'.format(pkg))
+                                            check_call(['sh', cfg], stdout=open(os.devnull, 'wb'), stderr=STDOUT)
+                                        except OSError as e:
+                                            logging.warning(e)
+                            except OSError as e:
+                                logging.warning(e)
+                        else:
+                            logging.warning('The directory {0}/{1} already exists, skipping tool {1}'.format(os.getcwd(), pkg))
+                    else:
+                        logging.debug('Installing {} with git'.format(pkg))
+                        if self.__SIMULATOR__:
+                            logging.info('SIMULATOR: running command: git clone {}'.format(pkg))
+                        else:
+                            try:
+                                check_call(['git', 'clone', pkg], stdout=open(os.devnull, 'wb'), stderr=STDOUT)
+                            except OSError as e:
+                                logging.warning(e)
+
+                if not self.__SIMULATOR__:
+                    logging.debug('Changing directory to: {}'.format(self.__GIT__))
+                    os.chdir(self.__GIT__)
+                    logging.debug('CWD: {}'.format(os.getcwd()))
         except OSError as e:
             logging.warning(e)
 
-        os.chdir(self.__ROOT_PATH__)
+        if not self.__SIMULATOR__:
+            logging.debug('Changing directory to: {}'.format(self.__ROOT_PATH__))
+            os.chdir(self.__ROOT_PATH__)
+            logging.debug('CWD: {}'.format(os.getcwd()))
         logging.debug('Git done.')
         return
 
     def __wget_install(self):
         logging.debug('Entered self.__wget_install()')
-        os.chdir(self.__TOOLS__)
+        if not self.__SIMULATOR__:
+            logging.debug('Changing directory to: {}'.format(self.__TOOLS__))
+            os.chdir(self.__TOOLS__)
+            logging.debug('CWD: {}'.format(os.getcwd()))
+
         try:
             for pkg in self.__wget_packages():
                 logging.debug('Installing {} with wget'.format(pkg))
-                check_call(['wget', pkg], stdout=open(os.devnull, 'wb'), stderr=STDOUT)
+                if self.__SIMULATOR__:
+                    logging.info('SIMULATOR: running command: wget {}'.format(pkg))
+                else:
+                    check_call(['wget', pkg], stdout=open(os.devnull, 'wb'), stderr=STDOUT)
         except OSError as e:
             logging.warning(e)
 
-        os.chdir(self.__ROOT_PATH__)
+        if not self.__SIMULATOR__:
+            logging.debug('Changing directory to: {}'.format(self.__ROOT_PATH__))
+            os.chdir(self.__ROOT_PATH__)
+            logging.debug('CWD: {}'.format(os.getcwd()))
         logging.debug('Wget done.')
         return
+
+    def __scripts_install(self):
+        logging.debug('Entered self.__repo_install()')
+        try:
+            for pkg in self.__scripts():
+                logging.debug('Running {}'.format(pkg))
+                if self.__SIMULATOR__:
+                    logging.info('SIMULATOR: running command: sh {}'.format(pkg))
+                else:
+                    check_call(['sh', pkg], stdout=open(os.devnull, 'wb'), stderr=STDOUT)
+        except OSError as e:
+            logging.warning(e)
+        return
+
+    @staticmethod
+    def __scripts():
+        logging.debug('Entered self.__scripts()')
+        from packages import scripts
+        return scripts.cfg
 
     @staticmethod
     def __apt_packages():
         logging.debug('Entered self.__apt_packages()')
-
-        return [
-            'terminator'
-        ]
+        from packages import apt
+        return apt.cfg
 
     @staticmethod
     def __git_packages():
         logging.debug('Entered self.__git_packages()')
-
-        return [
-            'https://github.com/trustedsec/unicorn.git'
-        ]
+        from packages import git
+        return git.cfg
 
     @staticmethod
     def __wget_packages():
-        return []
+        logging.debug('Entered self.__wget_packages()')
+        from packages import wget
+        return wget.cfg
 
 
 if __name__ == '__main__':
-    config = {}
-    
+    config = {
+
+    }
     pki = PKInstall(config)
     pki.install()
