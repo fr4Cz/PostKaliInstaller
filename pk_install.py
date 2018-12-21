@@ -132,6 +132,10 @@ class PKInstall:
             logging.debug("Attempting to install packages with wget")
             self.__wget_install()
 
+        if self.__SOURCES__['scripts']:
+            logging.debug("Attempting to run final scripts")
+            self.__scripts_install(False)
+
         logging.info('Installation finished at {}'.format(dt.datetime.now()))
         return
 
@@ -286,10 +290,15 @@ class PKInstall:
         logging.debug('Wget done.')
         return
 
-    def __scripts_install(self):
-        logging.debug('Entered self.__repo_install()')
+    def __scripts_install(self, initial=True):
+        logging.debug('Entered self.__scripts_install()')
         try:
-            for pkg in self.__scripts():
+            if initial:
+                script = self.__initial_scripts()
+            else:
+                script = self.__final_scripts()
+
+            for pkg in script:
                 logging.debug('Running {}'.format(pkg))
                 if self.__SIMULATOR__:
                     logging.info('SIMULATOR: running command: sh {}'.format(pkg))
@@ -297,13 +306,21 @@ class PKInstall:
                     check_call(['sh', pkg], stdout=open(os.devnull, 'wb'), stderr=STDOUT)
         except OSError as e:
             logging.warning(e)
+
+        logging.debug('Scripts done.')
         return
 
     @staticmethod
-    def __scripts():
-        logging.debug('Entered self.__scripts()')
-        from packages import scripts
-        return scripts.cfg
+    def __initial_scripts():
+        logging.debug('Entered self.__initial_scripts()')
+        from packages import initial_scripts
+        return initial_scripts.cfg
+
+    @staticmethod
+    def __final_scripts():
+        logging.debug('Entered self.__final_scripts()')
+        from packages import final_scripts
+        return final_scripts.cfg
 
     @staticmethod
     def __apt_packages():
