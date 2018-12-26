@@ -54,6 +54,9 @@ cfg = {
         },
         "ptf": {
             "url": "https://github.com/trustedsec/ptf.git"
+        },
+        "mimikatz": {
+            "url": "https://github.com/gentilkiwi/mimikatz"
         }
     },
 
@@ -63,6 +66,7 @@ cfg = {
 
     "other": [
         "https://github.com/chubin/cheat.sh.git",
-        "https://github.com/vitalysim/Awesome-Hacking-Resources.git"
+        "https://github.com/vitalysim/Awesome-Hacking-Resources.git",
+        "https://github.com/coreb1t/awesome-pentest-cheat-sheets"
     ]
 }
