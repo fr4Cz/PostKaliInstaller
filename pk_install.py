@@ -219,7 +219,9 @@ class PKInstall:
                 for pkg in packages[key]:
                     if key == 'tools':
                         url = packages[key][pkg]['url']
-                        cfg = packages[key][pkg]['config']
+                        cfg = ''
+                        if 'config' in packages[key][pkg]:
+                            cfg = '{}/{}'.format(self.__ROOT_PATH__, packages[key][pkg]['config'])
 
                         if not os.path.isdir('{}/{}'.format(os.getcwd(), pkg)) or self.__SIMULATOR__:
                             logging.debug('Installing {} with git'.format(url))

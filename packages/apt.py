@@ -5,5 +5,7 @@
 #   To remove a package simply run: apt-get remove <packagename> && apt-get autoremove
 #
 cfg = [
-  "terminator"
+  "terminator",
+  "tree",
+  "htop"
 ]

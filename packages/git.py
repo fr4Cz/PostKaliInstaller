@@ -3,7 +3,8 @@
 #   This config file should only contain a dictionary with content to clone from a git repository.
 #   Note that any file pulled will be placed under the git/<name> directory.
 #   Any project needing additional configuration or setup procedures can have a separate shell script associated.
-#   Shell scripts can be places anywhere, however it is a good idea to place them in the packages/config.
+#   Shell scripts can be places anywhere, however it is a good idea to place them in the packages/config, paths are relative to
+#   the PK_Installer root directory.
 #
 #   Valid Configuration Syntax:
 #   cfg = {
@@ -16,56 +17,43 @@
 cfg = {
     "tools": {
         "unicorn": {
-            "url": "https://github.com/trustedsec/unicorn.git",
-            "config": ""
+            "url": "https://github.com/trustedsec/unicorn.git"
         },
         "shellKiller": {
-            "url": "https://github.com/0x00-0x00/Shellkiller.git",
-            "config": ""
+            "url": "https://github.com/0x00-0x00/Shellkiller.git"
         },
         "sn1per": {
-            "url": "https://github.com/1N3/Sn1per.git",
-            "config": ""
+            "url": "https://github.com/1N3/Sn1per.git"
         },
         "apt2": {
-            "url": "https://github.com/MooseDojo/apt2.git",
-            "config": ""
+            "url": "https://github.com/MooseDojo/apt2.git"
         },
         "ivre": {
-            "url": "https://github.com/cea-sec/ivre.git",
-            "config": ""
+            "url": "https://github.com/cea-sec/ivre.git"
         },
         "lolbas": {
-            "url": "https://github.com/LOLBAS-Project/LOLBAS.git",
-            "config": ""
+            "url": "https://github.com/LOLBAS-Project/LOLBAS.git"
         },
         "pspy": {
-            "url": "https://github.com/DominicBreuker/pspy.git",
-            "config": ""
+            "url": "https://github.com/DominicBreuker/pspy.git"
         },
         "pupy": {
-            "url": "https://github.com/n1nj4sec/pupy.git",
-            "config": ""
+            "url": "https://github.com/n1nj4sec/pupy.git"
         },
         "rsg": {
-            "url": "https://github.com/mthbernardes/rsg.git",
-            "config": ""
+            "url": "https://github.com/mthbernardes/rsg.git"
         },
         "duckencoder": {
-            "url": "https://github.com/mame82/duckencoder.py.git",
-            "config": ""
+            "url": "https://github.com/mame82/duckencoder.py.git"
         },
         "empire": {
-            "url": "https://github.com/EmpireProject/Empire.git",
-            "config": ""
+            "url": "https://github.com/EmpireProject/Empire.git"
         },
         "psinject": {
-            "url": "https://github.com/EmpireProject/PSInject.git",
-            "config": ""
+            "url": "https://github.com/EmpireProject/PSInject.git"
         },
         "ptf": {
-            "url": "https://github.com/trustedsec/ptf.git",
-            "config": ""
+            "url": "https://github.com/trustedsec/ptf.git"
         }
     },
 

@@ -7,5 +7,5 @@
 #   Shell scripts can be places anywhere, however it is a good idea to place them in the packages/config.
 #
 cfg = [
-
+    'packages/config/set_bashrc.sh'
 ]
