@@ -19,4 +19,3 @@ _BRC="/etc/bash.bashrc"
 /usr/bin/echo "alias tree='tree -C'" >> ${_BRC}
 
 /usr/bin/cp ${_BRC} ${HOME}/.bashrc
-/usr/bin/env ${HOME}/.bashrc
