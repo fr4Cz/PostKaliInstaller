@@ -113,6 +113,7 @@ class PKInstall:
             logging.debug(msg)
 
     def install(self):
+        print(self.__banner())
         # Prepare directory structure
         # Defaults to: ~/git/ and ~/tools/
         if self.__SIMULATOR__:
@@ -379,6 +380,21 @@ class PKInstall:
         from packages import wget
         return wget.cfg
 
+    @staticmethod
+    def __banner():
+        return Fore.RED + '''
+       ██▓███   ██ ▄█▀ ██▓
+      ▓██░  ██▒ ██▄█▒ ▓██▒
+      ▓██░ ██▓▒▓███▄░ ▒██▒
+      ▒██▄█▓▒ ▒▓██ █▄ ░██░
+      ▒██▒ ░  ░▒██▒ █▄░██░
+      ▒▓▒░ ░  ░▒ ▒▒ ▓▒░▓  
+      ░▒ ░     ░ ░▒ ▒░ ▒ ░
+      ░░       ░ ░░ ░  ▒ ░
+            ░  ░    ░  
+        ''' + Style.RESET_ALL + '''
+.+´ Post Kali Installer v1.0 `+.
+        '''
 
 if __name__ == '__main__':
     config = {
