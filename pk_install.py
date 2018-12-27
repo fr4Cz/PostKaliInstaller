@@ -38,8 +38,9 @@ class PKInstall:
     }
 
     OK = '[' + Fore.GREEN + '+' + Style.RESET_ALL + ']'
-    WARN = '[' + Fore.YELLOW + '!!' + Style.RESET_ALL + ']'
+    WARN = '[' + Fore.YELLOW + '!' + Style.RESET_ALL + ']'
     FAIL = '[' + Fore.RED + 'x' + Style.RESET_ALL + ']'
+    MENU = '[' + Fore.LIGHTBLUE_EX + '-' + Style.RESET_ALL + ']'
 
     def __init__(self, args={}):
         #
@@ -115,41 +116,41 @@ class PKInstall:
         # Prepare directory structure
         # Defaults to: ~/git/ and ~/tools/
         if self.__SIMULATOR__:
-            print(self.WARN, Fore.LIGHTBLUE_EX + 'SIMULATOR Mode Enabled' + Style.RESET_ALL)
+            print(self.MENU, Fore.LIGHTRED_EX + 'SIMULATOR Mode Enabled' + Style.RESET_ALL)
             logging.info("SIMULATOR: Running in simulator mode! "
                          "This will only dump commands which would have been run on the system. "
                          "It is recommended that this mode is run with the DEBUG config flag set for the best output")
 
-        print(self.OK, Fore.LIGHTBLUE_EX + 'Building directory structure' + Style.RESET_ALL)
+        print(self.MENU, Fore.LIGHTBLUE_EX + 'Building directory structure' + Style.RESET_ALL)
         logging.debug('Attempting to build the directory structure')
         self.__build_dir_tree()
 
         if self.__SOURCES__['scripts']:
-            print(self.OK, Fore.LIGHTBLUE_EX + 'Running initial scripts' + Style.RESET_ALL)
+            print(self.MENU, Fore.LIGHTBLUE_EX + 'Running initial scripts' + Style.RESET_ALL)
             logging.debug("Attempting to run initial scripts")
             self.__scripts_install()
 
         if self.__SOURCES__['apt']:
-            print(self.OK, Fore.LIGHTBLUE_EX + 'Running installations through APT' + Style.RESET_ALL)
+            print(self.MENU, Fore.LIGHTBLUE_EX + 'Installing packages with APT' + Style.RESET_ALL)
             logging.debug("Attempting to install packages with apt")
             self.__apt_install()
 
         if self.__SOURCES__['git']:
-            print(self.OK, Fore.LIGHTBLUE_EX + 'Running installations through GIT' + Style.RESET_ALL)
-            logging.debug("Attempting to install packages with git")
+            print(self.MENU, Fore.LIGHTBLUE_EX + 'Fetching packages with GIT' + Style.RESET_ALL)
+            logging.debug("Attempting to fetch packages with git")
             self.__git_install()
 
         if self.__SOURCES__['wget']:
-            print(self.OK, Fore.LIGHTBLUE_EX + 'Running installations through WGET' + Style.RESET_ALL)
-            logging.debug("Attempting to install packages with wget")
+            print(self.MENU, Fore.LIGHTBLUE_EX + 'Fetching packages with WGET' + Style.RESET_ALL)
+            logging.debug("Attempting to fetch packages with wget")
             self.__wget_install()
 
         if self.__SOURCES__['scripts']:
-            print(self.OK, Fore.LIGHTBLUE_EX + 'Running final scripts' + Style.RESET_ALL)
+            print(self.MENU, Fore.LIGHTBLUE_EX + 'Running final scripts' + Style.RESET_ALL)
             logging.debug("Attempting to run final scripts")
             self.__scripts_install(False)
 
-        print(self.OK, Fore.LIGHTBLUE_EX + 'FINISHED ' + Style.RESET_ALL + "🍻")
+        print(self.MENU, Fore.LIGHTBLUE_EX + 'FINISHED ' + Style.RESET_ALL + "🍻")
         logging.info('Installation finished at {}'.format(dt.datetime.now()))
         return
 
@@ -166,10 +167,10 @@ class PKInstall:
                                   "with the following rights {}".format(self.__GIT__, self.__ACCESS_RIGHTS__)
                             logging.info(msg)
                         else:
-                            print(self.OK ,'Creating directory: {}'.format(self.__GIT__))
+                            print(self.OK ,'\tCreating directory: {}'.format(self.__GIT__))
                             os.mkdir(self.__GIT__, self.__ACCESS_RIGHTS__)
                 else:
-                    print(self.WARN, 'The directory: {} already exist'.format(self.__GIT__))
+                    print(self.WARN, '\tThe directory: {} already exist'.format(self.__GIT__))
                     logging.warning('The directory: {} already exists, using existing directory'.format(self.__GIT__))
 
                 if os.path.isdir(self.__GIT__):
@@ -177,10 +178,10 @@ class PKInstall:
                         new_dir = '{}{}'.format(self.__GIT__, path)
 
                         if not os.path.isdir(new_dir):
-                            print(self.OK, 'Creating directory: {}'.format(self.__GIT__))
+                            print(self.OK, '\tCreating directory: {}'.format(new_dir))
                             os.mkdir(new_dir, self.__ACCESS_RIGHTS__)
                         else:
-                            print(self.WARN , 'Failed creating dir: {}'.format(new_dir))
+                            print(self.WARN , '\tThe directory: {} already exist'.format(new_dir))
                             logging.warning('The directory {} already exists, using existing directory'.format(new_dir))
 
                 logging.debug("Creating tools directory: {}".format(self.__TOOLS__))
@@ -191,13 +192,13 @@ class PKInstall:
                                   "with the following rights {}".format(self.__TOOLS__, self.__ACCESS_RIGHTS__)
                             logging.info(msg)
                         else:
-                            print(self.OK, 'Creating directory: {}'.format(self.__TOOLS__))
+                            print(self.OK, '\tCreating directory: {}'.format(self.__TOOLS__))
                             os.mkdir(self.__TOOLS__, self.__ACCESS_RIGHTS__)
                 else:
-                    print(self.WARN, 'The directory: {} already exist'.format(self.__TOOLS__))
+                    print(self.WARN, '\tThe directory: {} already exist'.format(self.__TOOLS__))
                     logging.warning('The directory: {} already exists, using existing directory'.format(self.__TOOLS__))
             except OSError as e:
-                print(self.FAIL, e)
+                print(self.FAIL, '\t' + e)
                 logging.fatal(e)
                 sys.exit(e)
         return
@@ -205,7 +206,7 @@ class PKInstall:
     def __apt_install(self):
         logging.debug('Entered self.__apt_install()')
         if os.geteuid() != 0:
-            print(self.FAIL, 'Installing software with apt should only be done by root, skipping step...')
+            print(self.FAIL, '\tInstalling software with apt should only be done by ' + Fore.LIGHTRED_EX + 'root' + Style.RESET_ALL + ', skipping step...')
             logging.warning('Installing software with apt should only be done by root, skipping step...')
             return
 
@@ -213,14 +214,14 @@ class PKInstall:
             check_call(['apt-get', 'update'], stdout=open(os.devnull, 'wb'), stderr=STDOUT)
 
             for pkg in self.__apt_packages():
-                print(self.OK, 'Installing {} with apt-get'.format(pkg))
+                print(self.OK, '\tInstalling {}'.format(pkg))
                 logging.debug('Installing {} with apt-get'.format(pkg))
                 if self.__SIMULATOR__:
                     logging.info('SIMULATOR: running command: apt-get install -y {}'.format(pkg))
                 else:
                     check_call(['apt-get', 'install', '-y', pkg], stdout=open(os.devnull, 'wb'), stderr=STDOUT)
         except OSError as e:
-            print(self.FAIL, 'Failed installing {} with apt-get'.format(pkg))
+            print(self.FAIL, '\tFailed installing {} with apt-get'.format(pkg))
             logging.fatal(e)
             sys.exit(e)
 
@@ -248,7 +249,7 @@ class PKInstall:
                             cfg = '{}/{}'.format(self.__ROOT_PATH__, packages[key][pkg]['config'])
 
                         if not os.path.isdir('{}/{}'.format(os.getcwd(), pkg)) or self.__SIMULATOR__:
-                            print(self.OK, 'Installing {} with git'.format(url))
+                            print(self.OK, '\tCloning {}'.format(url))
                             logging.debug('Installing {} with git'.format(url))
                             try:
                                 if self.__SIMULATOR__:
@@ -261,20 +262,20 @@ class PKInstall:
                                         logging.info('SIMULATOR: running command: sh {}'.format(cfg))
                                     else:
                                         try:
-                                            print(self.OK, 'Configuring {}'.format(key))
+                                            print(self.OK, '\tConfiguring {}'.format(key))
                                             logging.debug('Running {} config script'.format(pkg))
                                             check_call(['sh', cfg], stdout=open(os.devnull, 'wb'), stderr=STDOUT)
                                         except OSError as e:
-                                            print(self.FAIL, 'Failed configuring {}'.format(key))
+                                            print(self.FAIL, '\tFailed configuring {}'.format(key))
                                             logging.warning(e)
                             except OSError as e:
                                 print(self.FAIL, e)
                                 logging.warning(e)
                         else:
-                            print(self.WARN, 'The directory {0}/{1} already exists, skipping tool {1}'.format(os.getcwd(), pkg))
+                            print(self.WARN, '\tThe directory {0}/{1} already exists, skipping tool {1}'.format(os.getcwd(), pkg))
                             logging.warning('The directory {0}/{1} already exists, skipping tool {1}'.format(os.getcwd(), pkg))
                     else:
-                        print(self.OK, 'Installing {} with git'.format(pkg))
+                        print(self.OK, '\tCloning {}'.format(pkg))
                         logging.debug('Installing {} with git'.format(pkg))
                         if self.__SIMULATOR__:
                             logging.info('SIMULATOR: running command: git clone {}'.format(pkg))
@@ -282,7 +283,7 @@ class PKInstall:
                             try:
                                 check_call(['git', 'clone', pkg], stdout=open(os.devnull, 'wb'), stderr=STDOUT)
                             except OSError as e:
-                                print(self.FAIL, 'Failed installing {}'.format(pkg))
+                                print(self.FAIL, '\tFailed installing {}'.format(pkg))
                                 logging.warning(e)
 
                 if not self.__SIMULATOR__:
@@ -290,7 +291,7 @@ class PKInstall:
                     os.chdir(self.__GIT__)
                     logging.debug('CWD: {}'.format(os.getcwd()))
         except OSError as e:
-            print(self.FAIL, e)
+            print(self.FAIL, '\t' + e)
             logging.warning(e)
 
         if not self.__SIMULATOR__:
@@ -309,14 +310,14 @@ class PKInstall:
 
         try:
             for pkg in self.__wget_packages():
-                print(self.OK, 'Installing {} with wget'.format(pkg))
+                print(self.OK, '\tFetching {}'.format(pkg))
                 logging.debug('Installing {} with wget'.format(pkg))
                 if self.__SIMULATOR__:
                     logging.info('SIMULATOR: running command: wget {}'.format(pkg))
                 else:
                     check_call(['wget', pkg], stdout=open(os.devnull, 'wb'), stderr=STDOUT)
         except OSError as e:
-            print(self.FAIL, e)
+            print(self.FAIL, '\t' + e)
             logging.warning(e)
 
         if not self.__SIMULATOR__:
@@ -335,14 +336,14 @@ class PKInstall:
                 script = self.__final_scripts()
 
             for pkg in script:
-                print(self.OK, 'Running {}'.format(pkg))
+                print(self.OK, '\tRunning {}'.format(pkg))
                 logging.debug('Running {}'.format(pkg))
                 if self.__SIMULATOR__:
                     logging.info('SIMULATOR: running command: sh {}'.format(pkg))
                 else:
                     check_call(['sh', pkg], stdout=open(os.devnull, 'wb'), stderr=STDOUT)
         except OSError as e:
-            print(self.FAIL, e)
+            print(self.FAIL, '\t' + e)
             logging.warning(e)
 
         logging.debug('Scripts done.')
