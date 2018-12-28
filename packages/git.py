@@ -8,9 +8,11 @@
 #
 #   Valid Configuration Syntax:
 #   cfg = {
-#       "name": {
-#           "url": "<url_to_git_project>",
-#            "config": "<path_to_shell_script>"
+#       "section": {
+#           "name": {
+#               "url": "<url_to_git_project>",
+#               "config": "<path_to_shell_script>"
+#           }
 #       }
 #   }
 #
@@ -60,13 +62,22 @@ cfg = {
         }
     },
 
-    "dictionaries": [
-        "https://github.com/danielmiessler/SecLists.git",
-    ],
+    "dictionaries": {
+        "seclists": {
+            "url": "https://github.com/danielmiessler/SecLists.git",
+        }
+    },
 
-    "other": [
-        "https://github.com/chubin/cheat.sh.git",
-        "https://github.com/vitalysim/Awesome-Hacking-Resources.git",
-        "https://github.com/coreb1t/awesome-pentest-cheat-sheets"
-    ]
+    "other": {
+        "cheat.sh": {
+            "url": "https://github.com/chubin/cheat.sh.git"
+        },
+        "awesome-hacking-resources": {
+            "url": "https://github.com/vitalysim/Awesome-Hacking-Resources.git"
+        },
+        "awesome-pentest-cheat-sheets": {
+            "url": "https://github.com/coreb1t/awesome-pentest-cheat-sheets.git"
+        }
+    }
+
 }
