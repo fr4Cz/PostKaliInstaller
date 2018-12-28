@@ -51,6 +51,13 @@ class PKInstall:
         self.__GIT__ = '{}/git/'.format(self.__ROOT_PATH__)
         self.__TOOLS__ = '{}/tools/'.format(self.__ROOT_PATH__)
 
+        #
+        # Define Environment variables used in external scripts
+        os.environ['PKIROOT'] = self.__ROOT_PATH__
+        os.environ['PKIUID'] = "20001"
+        if 'uid' in args and isinstance(args['uid'], int):
+            os.environ['PKIUID'] = args['uid']
+
         if self.__ROOT_PATH__ != os.getcwd():
             os.chdir(self.__ROOT_PATH__)
 
@@ -342,7 +349,8 @@ class PKInstall:
                 if self.__SIMULATOR__:
                     logging.info('SIMULATOR: running command: sh {}'.format(pkg))
                 else:
-                    check_call(['sh', pkg], stdout=open(os.devnull, 'wb'), stderr=STDOUT)
+                    # TODO; Find a way to redirect stdout from scripts to logger
+                    check_call(['sh', pkg], stdout=open(os.devnull, 'wb'), stderr=STDOUT, env=dict(os.environ))
         except OSError as e:
             print(self.FAIL, '\t' + e)
             logging.warning(e)
