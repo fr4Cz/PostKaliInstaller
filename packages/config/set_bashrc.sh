@@ -17,6 +17,7 @@ _BRC="${PKIROOT}/bashrc.tmp"
 /usr/bin/echo "alias la='/usr/bin/ls -lah'" >> ${_BRC}
 /usr/bin/echo "alias ll='/usr/bin/ls -lh'" >> ${_BRC}
 /usr/bin/echo "alias tree='tree -C'" >> ${_BRC}
+/usr/bin/echo "alias crack_wifi='besside-ng wlan0'" >> ${_BRC}
 
 /usr/bin/cp ${_BRC} /home/${PKIUSR}/.bashrc 2>> ${PKILOG}
 /usr/bin/chown -f ${PKIUSR}:staff /home/${PKIUSR}/.bashrc 2>> ${PKILOG}

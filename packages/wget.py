@@ -4,5 +4,5 @@
 #   Note that any file pulled will be placed under the tools directory.
 #
 cfg = [
-
+    'https://atom.io/download/deb'
 ]

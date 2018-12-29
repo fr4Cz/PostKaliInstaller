@@ -5,7 +5,19 @@
 #   To remove a package simply run: apt-get remove <packagename> && apt-get autoremove
 #
 cfg = [
-  "terminator",
-  "tree",
-  "htop"
+    "terminator",
+    "tree",
+    "htop",
+    "git",
+    "tor",
+    "deb.torproject.org-keyring",
+    "gvfs",
+    "gvfs-common",
+    "gvfs-daemons",
+    "gvfs-libs",
+    "gconf-service",
+    "gconf2",
+    "gconf2-common",
+    "gvfs-bin",
+    "psmisc"
 ]

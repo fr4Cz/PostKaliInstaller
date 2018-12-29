@@ -6,6 +6,10 @@
 #
 #   Shell scripts can be places anywhere, however it is a good idea to place them in the <PKI_ROOT>/packages/config.
 #
+import os
+
+cwd  = '{}/packages/config'.format(os.getcwd())
 cfg = [
-    'packages/config/set_bashrc.sh'
+    '{}/set_bashrc.sh'.format(cwd),
+    '{}/move_packages.sh'.format(cwd)
 ]
