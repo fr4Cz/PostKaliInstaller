@@ -9,8 +9,6 @@ cfg = [
     "tree",
     "htop",
     "git",
-    "tor",
-    "deb.torproject.org-keyring",
     "gvfs",
     "gvfs-common",
     "gvfs-daemons",

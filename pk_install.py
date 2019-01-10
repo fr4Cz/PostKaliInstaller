@@ -28,6 +28,7 @@ class PKInstall:
     __DEBUG__ = False
     __SIMULATOR__ = False
     __ROOT_PATH__ = os.getcwd()
+    __SCRIPT_ROOT__ = os.getcwd()
     __ACCESS_RIGHTS__ = 0o755
     __GIT__ = '{}/git'.format(__ROOT_PATH__)
     __TOOLS__ = '{}/tools'.format(__ROOT_PATH__)
@@ -126,7 +127,7 @@ class PKInstall:
                                          self.__SOURCES__['wget'],
                                          self.__SOURCES__['scripts'],
                                          self.__SIMULATOR__,
-                                         args['uid'],
+                                         os.environ['PKIUID'],
                                          log_level)
             logging.debug(msg)
 
@@ -343,18 +344,23 @@ class PKInstall:
                 script = self.__final_scripts()
 
             for pkg in script:
-                print(self.OK, '\tRunning {}'.format(pkg))
-                logging.debug('Running {}'.format(pkg))
+                if "{}" in pkg:
+                    p = pkg.format(self.__SCRIPT_ROOT__ + "/packages/config")
+                else:
+                    p = pkg
+
+                print(self.OK, '\tRunning {}'.format(p))
+                logging.debug('Running {}'.format(p))
                 if self.__SIMULATOR__:
-                    logging.info('SIMULATOR: running command: sh {}'.format(pkg))
+                    logging.info('SIMULATOR: running command: sh {}'.format(p))
                 else:
                     # TODO; Find a way to redirect stdout from scripts to logger
                     try:
-                        if os.path.isfile(pkg):
-                            check_call(['sh', pkg], stdout=open(os.devnull, 'wb'), stderr=STDOUT, env=dict(os.environ))
+                        if os.path.isfile(p):
+                            check_call(['sh', p], stdout=open(os.devnull, 'wb'), stderr=STDOUT, env=dict(os.environ))
                         else:
-                            print(self.FAIL, '\t{}/{} does not exist'.format(self.__ROOT_PATH__, pkg))
-                            logging.error('{}/{} does not exist'.format(self.__ROOT_PATH__, pkg))
+                            print(self.FAIL, '\t{} does not exist'.format(p))
+                            logging.error('{} does not exist'.format(p))
                     except OSError as e:
                         print(self.FAIL, '\t' + e)
                         logging.error(e)

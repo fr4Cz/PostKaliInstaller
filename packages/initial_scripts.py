@@ -6,10 +6,6 @@
 #
 #   Shell scripts can be places anywhere, however it is a good idea to place them in the <PKI_ROOT>/packages/config.
 #
-import os
-
-cwd  = '{}/packages/config'.format(os.getcwd())
 cfg = [
-    '{}/add_user.sh'.format(cwd),
-    '{}/add_repositories.sh'.format(cwd)
+    '{}/add_user.sh',
 ]

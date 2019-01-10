@@ -59,6 +59,12 @@ cfg = {
         },
         "mimikatz": {
             "url": "https://github.com/gentilkiwi/mimikatz"
+        },
+        "nishang": {
+            "url": "https://github.com/samratashok/nishang.git"
+        },
+        "sherlock": {
+            "url": "https://github.com/rasta-mouse/Sherlock.git"
         }
     },
 
