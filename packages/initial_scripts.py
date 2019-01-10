@@ -9,5 +9,6 @@
 cfg = [
     '{}/add_user.sh',
     '{}/add_custom_directories.sh',
-    '{}/install_atom.sh'
+    '{}/install_atom.sh',
+    '{}/msf_init.sh'
 ]
