@@ -22,4 +22,4 @@ _BRC="${PKIROOT}/bashrc.tmp"
 
 /usr/bin/cp ${_BRC} /home/${PKIUSR}/.bashrc 2>> ${PKILOG}
 /usr/bin/chown -f ${PKIUSR}:staff /home/${PKIUSR}/.bashrc 2>> ${PKILOG}
-/usr/bin/rm ${_BRC}
+/usr/bin/rm ${_BRC} 2>> ${PKILOG}

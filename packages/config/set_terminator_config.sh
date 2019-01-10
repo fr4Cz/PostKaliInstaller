@@ -2,9 +2,9 @@
 #
 #   This script fetches and installs the terminator themes plugin and new default configuration for Terminator
 #
-/usr/bin/pip install requests
-/usr/bin/mkdir -p /home/${PKIUSR}/.config/terminator/plugins
-/usr/bin/wget https://git.io/v5Zww -O "/home/${PKIUSR}/.config/terminator/plugins/terminator-themes.py"
+/usr/bin/pip install requests  2>> ${PKILOG}
+/usr/bin/mkdir -p /home/${PKIUSR}/.config/terminator/plugins  2>> ${PKILOG}
+/usr/bin/wget https://git.io/v5Zww -O "/home/${PKIUSR}/.config/terminator/plugins/terminator-themes.py"  2>> ${PKILOG}
 
 CFG=/home/${PKIUSR}/.config/terminator/config
 
@@ -33,3 +33,5 @@ CFG=/home/${PKIUSR}/.config/terminator/config
 /usr/bin/echo "    cursor_color = \"#9e9ecb\"" >> ${CFG}
 /usr/bin/echo "    foreground_color = \"#e2d8cd\"" >> ${CFG}
 /usr/bin/echo "    palette = \"#333333:#f8818e:#92d3a2:#1a8e63:#8ed0ce:#5e468c:#31658c:#e2d8cd:#3d3d3d:#fb3d66:#6bb48d:#30c85a:#39a7a2:#7e62b3:#6096bf:#e2d8cd\"" >> ${CFG}
+
+/usr/bin/chown -R ${PKIUSR}:staff /home/${PKIUSR}/.config 2>> ${PKILOG}

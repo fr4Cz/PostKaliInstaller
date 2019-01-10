@@ -59,6 +59,7 @@ class PKInstall:
         # Define Environment variables used in external scripts
         os.environ['PKIROOT'] = self.__ROOT_PATH__
         os.environ['PKILOG'] = self.__LOG_FILE__
+        os.environ['PKIPKGROOT'] = self.__PACKAGE_ROOT__
 
         # Note, remember to change the password manually before using the system!
         os.environ['PKIUSR'] = 'user'

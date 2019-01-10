@@ -8,5 +8,6 @@
 #
 cfg = [
     '{}/add_user.sh',
-    '{}/add_custom_directories.sh'
+    '{}/add_custom_directories.sh',
+    '{}/install_atom.sh'
 ]
