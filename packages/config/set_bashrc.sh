@@ -13,11 +13,12 @@ _BRC="${PKIROOT}/bashrc.tmp"
 /usr/bin/echo "export LSCOLORS=GxFxCxDxBxegedabagaced" >> ${_BRC}
 
 /usr/bin/echo "# Aliases" >> ${_BRC}
-/usr/bin/echo "alias ls='/usr/bin/ls --color=auto'" >> ${_BRC}
-/usr/bin/echo "alias la='/usr/bin/ls -lah'" >> ${_BRC}
-/usr/bin/echo "alias ll='/usr/bin/ls -lh'" >> ${_BRC}
+/usr/bin/echo "alias ls='ls --color=auto'" >> ${_BRC}
+/usr/bin/echo "alias la='ls -lah'" >> ${_BRC}
+/usr/bin/echo "alias ll='ls -lh'" >> ${_BRC}
 /usr/bin/echo "alias tree='tree -C'" >> ${_BRC}
 /usr/bin/echo "alias crack_wifi='besside-ng wlan0'" >> ${_BRC}
+/usr/bin/echo "alias htb='openvpn ~/Documents/htb/vpn/htb.ovpn'" >> ${_BRC}
 
 /usr/bin/cp ${_BRC} /home/${PKIUSR}/.bashrc 2>> ${PKILOG}
 /usr/bin/chown -f ${PKIUSR}:staff /home/${PKIUSR}/.bashrc 2>> ${PKILOG}

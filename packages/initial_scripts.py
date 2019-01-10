@@ -8,4 +8,5 @@
 #
 cfg = [
     '{}/add_user.sh',
+    '{}/add_custom_directories.sh'
 ]

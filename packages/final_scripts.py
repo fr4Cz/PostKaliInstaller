@@ -8,5 +8,7 @@
 #
 cfg = [
     '{}/set_bashrc.sh',
-    '{}/move_packages.sh'
+    '{}/move_packages.sh',
+    '{}/set_wallpaper.sh',
+    '{}/set_terminator_config.sh'
 ]

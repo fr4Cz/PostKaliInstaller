@@ -17,5 +17,6 @@ cfg = [
     "gconf2",
     "gconf2-common",
     "gvfs-bin",
-    "psmisc"
+    "psmisc",
+    "gnome-tweaks"
 ]

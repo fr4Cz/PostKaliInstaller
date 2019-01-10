@@ -28,7 +28,7 @@ class PKInstall:
     __DEBUG__ = False
     __SIMULATOR__ = False
     __ROOT_PATH__ = os.getcwd()
-    __SCRIPT_ROOT__ = os.getcwd()
+    __PACKAGE_ROOT__ = os.getcwd()
     __ACCESS_RIGHTS__ = 0o755
     __GIT__ = '{}/git'.format(__ROOT_PATH__)
     __TOOLS__ = '{}/tools'.format(__ROOT_PATH__)
@@ -345,7 +345,7 @@ class PKInstall:
 
             for pkg in script:
                 if "{}" in pkg:
-                    p = pkg.format(self.__SCRIPT_ROOT__ + "/packages/config")
+                    p = pkg.format(self.__PACKAGE_ROOT__ + "/packages/config")
                 else:
                     p = pkg
 
