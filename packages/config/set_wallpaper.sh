@@ -2,10 +2,9 @@
 #
 #   This script changes the default Kali desktop and lock-screen
 #
-_WP="/home/${PKIUSR}/Pictures/wallpapers"
+_WP="/home/${PKIUSR}/Pictures"
 _IMG="file://${_WP}/wp.png"
 
-/usr/bin/mkdir -p ${_WP} 2>> ${PKILOG}
 /usr/bin/cp ${PKIPKGROOT}/packages/wallpapers/wp.png ${_WP} 2>> ${PKILOG}
 /usr/bin/chown -R ${PKIUSR}:staff ${_WP} 2>> ${PKILOG}
 
