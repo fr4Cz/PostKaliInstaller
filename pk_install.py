@@ -275,8 +275,11 @@ class PKInstall:
                             if self.__SIMULATOR__:
                                 logging.info('SIMULATOR: running command: git clone {} {}'.format(url, pkg))
                             else:
-                                check_call(['git', 'clone', url, pkg], stdout=open(os.devnull, 'wb'), stderr=STDOUT)
-
+                                try:
+                                    check_call(['git', 'clone', url, pkg], stdout=open(os.devnull, 'wb'), stderr=STDOUT)
+                                except OSError as e:
+                                    print(self.FAIL, '\tFailed fetching {}'.format(url))
+                                    logging.error(e)
                             if cfg != '':
                                 if self.__SIMULATOR__:
                                     logging.info('SIMULATOR: running command: sh {}'.format(cfg))
