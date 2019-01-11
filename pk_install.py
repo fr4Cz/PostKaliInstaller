@@ -42,7 +42,7 @@ class PKInstall:
     OK = '[' + Fore.GREEN + '+' + Style.RESET_ALL + ']'
     WARN = '[' + Fore.YELLOW + '!' + Style.RESET_ALL + ']'
     FAIL = '[' + Fore.RED + 'x' + Style.RESET_ALL + ']'
-    MENU = '[' + Fore.LIGHTBLUE_EX + '-' + Style.RESET_ALL + ']'
+    MENU = '\n[' + Fore.LIGHTBLUE_EX + '-' + Style.RESET_ALL + ']'
 
     def __init__(self, args={}):
         #
