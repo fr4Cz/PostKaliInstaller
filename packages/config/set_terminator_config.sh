@@ -8,7 +8,7 @@
 
 CFG=/home/${PKIUSR}/.config/terminator/config
 
-/usr/bin/echo "[global_config]" >> ${CFG}
+/usr/bin/echo "[global_config]" > ${CFG}
 /usr/bin/echo "  enabled_plugins = TerminatorThemes, LaunchpadCodeURLHandler, APTURLHandler, LaunchpadBugURLHandler" >> ${CFG}
 /usr/bin/echo "  title_inactive_bg_color = \"#dadada\"" >> ${CFG}
 /usr/bin/echo "  title_receive_bg_color = \"#dadada\"" >> ${CFG}
