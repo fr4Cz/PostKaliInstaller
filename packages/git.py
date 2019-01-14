@@ -73,7 +73,10 @@ cfg = {
 
     "dictionaries": {
         "seclists": {
-            "url": "https://github.com/danielmiessler/SecLists.git",
+            "url": "https://github.com/danielmiessler/SecLists.git"
+        },
+        "probableWordlists": {
+            "url": "https://github.com/berzerk0/Probable-Wordlists.git"
         }
     },
 
