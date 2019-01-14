@@ -65,6 +65,9 @@ cfg = {
         },
         "sherlock": {
             "url": "https://github.com/rasta-mouse/Sherlock.git"
+        },
+        "linenum": {
+            "url": "https://github.com/rebootuser/LinEnum.git"
         }
     },
 
